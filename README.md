@@ -124,4 +124,4 @@ Este proyecto es de código abierto y está disponible para uso personal y educa
 
 ---
 
-**Hecho con ❤️ para los amantes del cine**
+**https://roadmap.sh/projects/tmdb-cli**
