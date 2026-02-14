@@ -1,15 +1,19 @@
 # 🎨 TMDB-CLI
 
-Una herramienta de línea de comandos simple y elegante para consultar información de películas desde **The Movie Database (TMDB)**, con tablas coloridas en tu terminal.
+Herramienta de línea de comandos para buscar **películas, series y actores** usando la API de The Movie Database, con interfaz colorida y profesional.
+
+> 💡 **Destaca**: UX con tablas coloridas, caché local y múltiples formatos de salida
 
 ## ✨ Características
 
-- 🎥 **Now Playing**: Películas que están actualmente en cines
-- 🔥 **Popular**: Las películas más populares del momento
-- ⭐ **Top Rated**: Las películas mejor valoradas de todos los tiempos
-- 🔜 **Upcoming**: Próximos estrenos
-- 🔍 **Search**: Buscar películas por nombre
-- 🎨 **Rich Tables**: Resultados en tablas coloridas con emojis
+- 🎥 **Películas**: En cartelera, populares, mejor valoradas, próximos estrenos
+- 📺 **Series**: Búsqueda e información detallada de series de TV
+- 👤 **Personas**: Búsqueda de actores, directores y más
+- 🔥 **Trending**: Contenido en tendencia (día/semana)
+- 📋 **Info detallada**: Paneles con ratings, géneros, biografías y créditos
+- 🎨 **Rich Tables**: Interfaz colorida con [Rich](https://rich.readthedocs.io/)
+- 📦 **Caché local**: Respuestas cacheadas para mayor velocidad
+- 📄 **Múltiples formatos**: Salida en tabla o JSON (`--format json`)
 
 ## 📋 Requisitos Previos
 
@@ -25,78 +29,74 @@ Una herramienta de línea de comandos simple y elegante para consultar informaci
    cd TMBD-CLI-Tool
    ```
 
-2. **Instala como paquete** (recomendado):
-   ```bash
-   pip install -e .
-   ```
-
-   O instala solo las dependencias:
+2. **Instala las dependencias**:
    ```bash
    pip install -r requirements.txt
    ```
 
 3. **Configura tu API Token**:
 
-   Crea un archivo `.env` en la raíz del proyecto y agrega tu token:
+   Crea un archivo `.env` en la raíz del proyecto:
    ```env
    TMDB_API_TOKEN=tu_token_aqui
    ```
 
-   Para obtener tu token:
-   - Ve a [TMDB](https://www.themoviedb.org/)
-   - Regístrate o inicia sesión
-   - Ve a Configuración → API → Crear Bearer Token
-
 ## 💻 Uso
 
-Si instalaste con `pip install -e .`:
-
 ```bash
-tmbd <comando>
-```
-
-O directamente con Python:
-
-```bash
-python -m tmbd.tmbd <comando>
+python -m tmbd [--format table|json] <comando>
 ```
 
 ### Comandos disponibles:
 
-- `playing` — Películas actualmente en cines
-- `popular` — Películas populares
-- `top-rated` — Películas mejor valoradas
-- `upcoming` — Próximos estrenos
-- `search <query>` — Buscar películas por nombre
+**Películas:**
+- `python -m tmbd playing` — En cartelera
+- `python -m tmbd popular` — Populares
+- `python -m tmbd top-rated` — Mejor valoradas
+- `python -m tmbd upcoming` — Próximos estrenos
+
+**Búsqueda:**
+- `python -m tmbd search <query>` — Buscar películas
+- `python -m tmbd search-tv <query>` — Buscar series
+- `python -m tmbd search-person <query>` — Buscar actores/personas
+
+**Trending:**
+- `python -m tmbd trending` — Tendencia del día (todo)
+- `python -m tmbd trending --type movie --window week` — Películas de la semana
+
+**Info detallada:**
+- `python -m tmbd info movie <id>` — Detalle de película
+- `python -m tmbd info tv <id>` — Detalle de serie
+- `python -m tmbd info person <id>` — Detalle de persona
+
+**Utilidades:**
+- `python -m tmbd clear-cache` — Limpiar caché local
+
+> 💡 **Tip**: Si prefieres usar `tmbd` directamente, instala con `pip install -e .` y asegúrate de que el directorio de scripts de pip esté en tu PATH.
 
 ### Ejemplos:
 
 ```bash
 # Películas en cartelera
-tmbd playing
+python -m tmbd playing
 
-# Películas populares
-tmbd popular
+# Buscar series
+python -m tmbd search-tv "Breaking Bad"
 
-# Películas mejor valoradas
-tmbd top-rated
+# Buscar actores
+python -m tmbd search-person "Leonardo DiCaprio"
 
-# Próximos estrenos
-tmbd upcoming
+# Trending de la semana (solo películas)
+python -m tmbd trending --type movie --window week
 
-# Buscar películas
-tmbd search "Inception"
-```
+# Info detallada de una película
+python -m tmbd info movie 27205
 
-### Ejemplo de salida:
+# Info de un actor
+python -m tmbd info person 6193
 
-```
-┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
-┃                    🔍 Resultados: 'Inception'                    ┃
-┡━━━━┳━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━┳━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━┩
-│ #  │ 🎨 Título           │ 📅 Estreno │ ⭐ Rat │ 📝 Sinopsis                  │
-│ 1  │ Inception           │ 2010-07-15 │  8.4   │ A thief who steals...     │
-└────┴─────────────────────┴────────────┴────────┴────────────────────────────┘
+# Salida en JSON
+python -m tmbd --format json search "Inception"
 ```
 
 ## 📦 Estructura del Proyecto
@@ -105,43 +105,30 @@ tmbd search "Inception"
 TMBD-CLI-Tool/
 ├── .env                    # Variables de entorno (API Token)
 ├── README.md               # Este archivo
-├── requirements.txt        # Dependencias del proyecto
+├── requirements.txt        # Dependencias
 ├── setup.py                # Configuración de instalación
 └── tmbd/
     ├── __init__.py         # Paquete Python
-    ├── tmbd.py             # CLI con Click + Rich
-    └── fetch_movie.py      # Funciones para consultar la API de TMDB
+    ├── __main__.py         # Entry point para python -m tmbd
+    ├── tmbd.py             # CLI con Click (comandos)
+    ├── api.py              # Requests a TMDB con caché
+    ├── display.py          # Tablas y paneles Rich
+    └── cache.py            # Sistema de caché local
 ```
 
 ## 🔧 Cómo Funciona
 
-1. **tmbd.py**: CLI construido con [Click](https://click.palletsprojects.com/) con subcomandos intuitivos
-2. **fetch_movie.py**: Peticiones HTTP a la API de TMDB usando `requests`
-3. **Rich**: Resultados mostrados en tablas coloridas con [Rich](https://rich.readthedocs.io/)
-4. **Manejo de errores**: Errores HTTP, conexión, timeout y otros errores manejados de forma amigable
+1. **tmbd.py**: CLI con [Click](https://click.palletsprojects.com/) — comandos para películas, series, personas y trending
+2. **api.py**: Peticiones a TMDB con caché automático (30 min listas, 24h detalles)
+3. **display.py**: Tablas y paneles coloridos con [Rich](https://rich.readthedocs.io/)
+4. **cache.py**: Caché local en `~/.tmbd_cache/` con TTL configurable
 
 ## 🛡️ Manejo de Errores
 
-El CLI incluye manejo de errores para:
 - ❌ Errores HTTP (401, 404, 500, etc.)
 - 🔌 Problemas de conexión
 - ⏱️ Timeouts
 - 🐛 Errores inesperados
-
-Todos los errores se muestran de forma amigable en la terminal.
-
-## 🤝 Contribuciones
-
-Las contribuciones son bienvenidas. Si encuentras un bug o tienes una sugerencia:
-
-1. Abre un issue
-2. Crea un fork del proyecto
-3. Haz tus cambios
-4. Envía un pull request
-
-## 📝 Licencia
-
-Este proyecto es de código abierto y está disponible para uso personal y educativo.
 
 ## 🔗 Recursos
 
