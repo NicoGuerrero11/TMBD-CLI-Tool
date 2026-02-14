@@ -5,55 +5,44 @@ from dotenv import load_dotenv
 load_dotenv()
 
 TOKEN = os.getenv("TMDB_API_TOKEN")
+BASE_URL = "https://api.themoviedb.org/3"
+HEADERS = {
+    "accept": "application/json",
+    "Authorization": f"Bearer {TOKEN}",
+}
 
-def safe_request(url: str, header:dict):
+
+def safe_request(url: str):
     try:
-        response = requests.get(url, headers=header)
+        response = requests.get(url, headers=HEADERS)
         response.raise_for_status()
         return response.json()
     except requests.exceptions.HTTPError as e:
-        raise RuntimeError("Error HTTP al consultar TMDB") from e
-
+        raise RuntimeError(f"Error HTTP al consultar TMDB: {e.response.status_code}") from e
     except requests.exceptions.ConnectionError:
         raise RuntimeError("No se pudo conectar a TMDB")
-
     except requests.exceptions.Timeout:
         raise RuntimeError("La solicitud a TMDB expiró")
-
     except requests.exceptions.RequestException as e:
         raise RuntimeError("Error inesperado en la petición") from e
 
-def get_playing():
-    url_playing = "https://api.themoviedb.org/3/movie/now_playing?language=en-US&page=1"
-    headers = {
-        "accept": "application/json",
-        "Authorization": f"Bearer {TOKEN} ",
-    }
 
-    return safe_request(url_playing, headers)
+def get_playing():
+    return safe_request(f"{BASE_URL}/movie/now_playing?language=en-US&page=1")
+
 
 def popular():
-    url_popular = "https://api.themoviedb.org/3/movie/popular?language=en-US&page=1"
-    headers = {
-        "accept": "application/json",
-        "Authorization": f"Bearer {TOKEN}",
-    }
+    return safe_request(f"{BASE_URL}/movie/popular?language=en-US&page=1")
 
-    return safe_request(url_popular, headers)
+
 def top_rated():
-    url_top = "https://api.themoviedb.org/3/movie/top_rated?language=en-US&page=1"
-    headers = {
-        "accept": "application/json",
-        "Authorization": f"Bearer {TOKEN}",
-    }
+    return safe_request(f"{BASE_URL}/movie/top_rated?language=en-US&page=1")
 
-    return safe_request(url_top, headers)
 
 def upcoming():
-    url_upcoming = "https://api.themoviedb.org/3/movie/upcoming?language=en-US&page=1"
-    headers = {
-        "accept": "application/json",
-        "Authorization": f"Bearer {TOKEN}",
-    }
+    return safe_request(f"{BASE_URL}/movie/upcoming?language=en-US&page=1")
 
-    return safe_request(url_upcoming, headers)
+
+def search_movie(query: str):
+    encoded_query = requests.utils.quote(query)
+    return safe_request(f"{BASE_URL}/search/movie?query={encoded_query}&language=en-US&page=1")

@@ -1,15 +1,15 @@
-# 🎬 TMDB-CLI
+# 🎨 TMDB-CLI
 
-Una herramienta de línea de comandos simple y elegante para consultar información de películas desde **The Movie Database (TMDB)**.
+Una herramienta de línea de comandos simple y elegante para consultar información de películas desde **The Movie Database (TMDB)**, con tablas coloridas en tu terminal.
 
 ## ✨ Características
-
-Este CLI te permite acceder rápidamente a diferentes listas de películas directamente desde tu terminal:
 
 - 🎥 **Now Playing**: Películas que están actualmente en cines
 - 🔥 **Popular**: Las películas más populares del momento
 - ⭐ **Top Rated**: Las películas mejor valoradas de todos los tiempos
 - 🔜 **Upcoming**: Próximos estrenos
+- 🔍 **Search**: Buscar películas por nombre
+- 🎨 **Rich Tables**: Resultados en tablas coloridas con emojis
 
 ## 📋 Requisitos Previos
 
@@ -22,16 +22,21 @@ Este CLI te permite acceder rápidamente a diferentes listas de películas direc
 1. **Clona el repositorio**:
    ```bash
    git clone <tu-repositorio>
-   cd TMBD-CLI
+   cd TMBD-CLI-Tool
    ```
 
-2. **Instala las dependencias**:
+2. **Instala como paquete** (recomendado):
+   ```bash
+   pip install -e .
+   ```
+
+   O instala solo las dependencias:
    ```bash
    pip install -r requirements.txt
    ```
 
 3. **Configura tu API Token**:
-   
+
    Crea un archivo `.env` en la raíz del proyecto y agrega tu token:
    ```env
    TMDB_API_TOKEN=tu_token_aqui
@@ -44,55 +49,76 @@ Este CLI te permite acceder rápidamente a diferentes listas de películas direc
 
 ## 💻 Uso
 
-Ejecuta el CLI con el siguiente formato:
+Si instalaste con `pip install -e .`:
 
 ```bash
-python tmbd/tmbd.py --type <tipo_de_consulta>
+tmbd <comando>
 ```
 
-### Opciones disponibles:
+O directamente con Python:
 
-| Opción | Descripción |
-|--------|-------------|
-| `playing` | Películas actualmente en cines |
-| `popular` | Películas populares |
-| `top_rated` | Películas mejor valoradas |
-| `upcoming` | Próximos estrenos |
+```bash
+python -m tmbd.tmbd <comando>
+```
+
+### Comandos disponibles:
+
+- `playing` — Películas actualmente en cines
+- `popular` — Películas populares
+- `top-rated` — Películas mejor valoradas
+- `upcoming` — Próximos estrenos
+- `search <query>` — Buscar películas por nombre
 
 ### Ejemplos:
 
 ```bash
-# Obtener películas en cartelera
-python tmbd/tmbd.py --type playing
+# Películas en cartelera
+tmbd playing
 
-# Obtener películas populares
-python tmbd/tmbd.py --type popular
+# Películas populares
+tmbd popular
 
-# Obtener películas mejor valoradas
-python tmbd/tmbd.py --type top_rated
+# Películas mejor valoradas
+tmbd top-rated
 
-# Obtener próximos estrenos
-python tmbd/tmbd.py --type upcoming
+# Próximos estrenos
+tmbd upcoming
+
+# Buscar películas
+tmbd search "Inception"
+```
+
+### Ejemplo de salida:
+
+```
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃                    🔍 Resultados: 'Inception'                    ┃
+┡━━━━┳━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━┳━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━┩
+│ #  │ 🎨 Título           │ 📅 Estreno │ ⭐ Rat │ 📝 Sinopsis                  │
+│ 1  │ Inception           │ 2010-07-15 │  8.4   │ A thief who steals...     │
+└────┴─────────────────────┴────────────┴────────┴────────────────────────────┘
 ```
 
 ## 📦 Estructura del Proyecto
 
 ```
-TMBD-CLI/
+TMBD-CLI-Tool/
 ├── .env                    # Variables de entorno (API Token)
-├── README.md              # Este archivo
-├── requirements.txt       # Dependencias del proyecto
+├── README.md               # Este archivo
+├── requirements.txt        # Dependencias del proyecto
+├── setup.py                # Configuración de instalación
 └── tmbd/
-    ├── tmbd.py           # Punto de entrada del CLI
-    └── fetch_movie.py    # Funciones para consultar la API de TMDB
+    ├── __init__.py         # Paquete Python
+    ├── tmbd.py             # CLI con Click + Rich
+    └── fetch_movie.py      # Funciones para consultar la API de TMDB
 ```
 
 ## 🔧 Cómo Funciona
 
-1. **tmbd.py**: Maneja los argumentos de línea de comandos usando `argparse` y llama a las funciones correspondientes
-2. **fetch_movie.py**: Contiene las funciones que hacen las peticiones HTTP a la API de TMDB usando `requests`
-3. **Manejo de errores**: Incluye manejo robusto de errores HTTP, conexión, timeout y otros errores inesperados
-4. **Salida**: Los resultados se imprimen en formato JSON con indentación legible
+1. **tmbd.py**: CLI construido con [Click](https://click.palletsprojects.com/) con subcomandos intuitivos
+2. **fetch_movie.py**: Peticiones HTTP a la API de TMDB usando `requests`
+3. **Rich**: Resultados mostrados en tablas coloridas con [Rich](https://rich.readthedocs.io/)
+4. **Manejo de errores**: Errores HTTP, conexión, timeout y otros errores manejados de forma amigable
 
 ## 🛡️ Manejo de Errores
 
